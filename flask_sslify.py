@@ -36,9 +36,15 @@ class SSLify(object):
     def redirect_to_ssl(self):
         """Redirect incoming requests to HTTPS."""
         # Should we redirect?
+
+        # Use Flask config variable USE_SSL
+        use_ssl = app.config.get('USE_SSL', None)
+        if use_ssl is None:
+            use_ssl = not (self.app.debug)
+
         criteria = [
             request.is_secure,
-            self.app.debug,
+            not (use_ssl),
             request.headers.get('X-Forwarded-Proto', 'http') == 'https'
         ]
 
